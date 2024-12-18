@@ -28,7 +28,7 @@ struct building_s myBuilding;
 // Private Function Prototype(s):
 //****************************************************************************
 static void initBuilding(void);
-static int8_t setNextElevatorStop(struct building_s building);
+static int8_t setNextElevatorStop(struct building_s building, int dir_plus);
 static void moveElevator(struct elevator_s * elevator);
 static void stopElevator(struct building_s * building);
 static void drawBuilding(struct building_s building, int8_t door_status);
@@ -44,9 +44,95 @@ static void delay(int16_t ms);
 //To stop at a floor means to open the doors and let passengers on and off. It 
 //is possible to pass through a floor without stopping there.
 //Note: The output should be a number between 0 and (BUILDING_HEIGHT-1), inclusive
-static int8_t setNextElevatorStop(struct building_s building)
-{
-	return 0;
+static int8_t setNextElevatorStop(struct building_s building, int dir_plus)
+{	
+	printf("Here");
+	int empty_flag = 1;
+	int passenger_count = 0;
+	for (int i = 0; i < sizeof(building.elevator.passengers); i++)
+	{
+		if (building.elevator.passengers[i] != -1)
+		{
+			empty_flag = 0;
+			i = sizeof(building.elevator.passengers);
+			passenger_count++;
+		}
+	}
+
+	int upcount = 0;
+	int downcount = 0;
+	int closest_floor1 = 6;;
+	int closest_floor2 = -1;
+	if (empty_flag)
+	{
+		for (int i = building.elevator.currentFloor; i < BUILDING_HEIGHT; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				if ((building.floors[i].departures[j] - i) > 0)
+				{
+					if (closest_floor1 > i)
+						closest_floor1 = i;
+					upcount++;
+				}
+			}
+		}
+
+		for (int i = building.elevator.currentFloor; i == 0; i--)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				if ((building.floors[i].departures[j] - i) > 0)
+				{
+					if (closest_floor2 < i)
+						closest_floor2 = i;
+					downcount++;
+				}
+			}
+		}
+
+		if (upcount > downcount)
+			return closest_floor1;
+		else
+			return closest_floor2;
+	}
+
+	else
+	{
+		if (passenger_count == 3){
+			int closest_passenger = 6;
+			for (int i = 0; i < sizeof(building.elevator.passengers); i++)
+			{
+				if (abs(building.elevator.passengers[i] - building.elevator.currentFloor) < closest_passenger)
+				{
+					closest_passenger = building.elevator.passengers[i];
+				}
+			}
+			return closest_passenger;
+		}
+		else {
+			int closest_passenger = 6;
+			for (int i = 0; i < sizeof(building.elevator.passengers); i++)
+			{
+				 
+				if ((abs(building.elevator.passengers[i] - building.elevator.currentFloor) < closest_passenger) && building.elevator.passengers[i] != -1)
+				{
+					closest_passenger = building.elevator.passengers[i];
+				}
+			}
+			return closest_passenger;
+		}
+		
+		
+		
+
+	}
+
+		
+
+
+
+	return building.elevator.currentFloor + dir_plus;
 }
 
 
@@ -75,11 +161,17 @@ void main(void)
 	fflush(stdout);
 	delay(1000);
 
+	int elevator_direction = 1;
+
 	//Run the elevator for a set period of time
 	for(int8_t i = 0; i < 60; i++)
 	{
 		//Choose the next floor to stop at
-		myBuilding.elevator.nextStop = setNextElevatorStop(myBuilding);
+		if (((elevator_direction + myBuilding.elevator.currentFloor) > BUILDING_HEIGHT-1) && (elevator_direction == 1))
+			elevator_direction = -1;
+		else if (((elevator_direction + myBuilding.elevator.currentFloor) < 0) && (elevator_direction == -1))
+			elevator_direction = 1;
+		myBuilding.elevator.nextStop = setNextElevatorStop(myBuilding, elevator_direction);
 
 		//Move the elevator closer to the next stop
 		moveElevator(&myBuilding.elevator);

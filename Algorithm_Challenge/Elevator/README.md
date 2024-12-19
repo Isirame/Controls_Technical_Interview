@@ -40,6 +40,11 @@ Candidate Action Items:
   there's a bug in the code.
 - Briefly describe your implementation (1-3 sentences).
   - ADD YOUR ANSWER HERE
+  My edit determines what the program will do in three states. When the elevator is empty, it finds the closest floor with
+  somebody on it. When the elevator is full, it determines the next stop as the closest stop desired by the occupants of 
+  the elevator. When it neither empty of full, I first determine the closest desired stop of the current occupants, but then
+  find whether there are riders between the current floor and the destination floor, not yet picked up, who are heading in
+  the same direction.
 
 Don't forget; we are interested in both your solution and your thought process.
 

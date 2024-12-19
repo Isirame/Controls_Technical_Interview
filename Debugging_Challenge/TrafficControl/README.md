@@ -40,8 +40,17 @@ Candidate Action Items:
 - Answer the following questions:
   - What would you tell the junior engineer about ways that they could improve their code in the future? (1-3 sentences)
     - ADD YOUR ANSWER HERE
+	- Always have the full complement of cases in mind when setting up case selection blocks. Be aware of the syntax and
+	of switch statements and the behavior of if statments. Values like "10" used in the draw functions can be made into
+	constants. The variables verticalTrafficColor and horizontalTrafficColor can be of type traffic_light_colors_t in 
+	order to preclude the if-else statements in the set traffic lights functions.
   - How else would you change this code to make it better so you can build on it in the future?(1-10 sentences).
     - ADD YOUR ANSWER HERE
+	- Add the ability to take turns in any direction. This can be done by adding a variable to each new car or an array that
+	keeps track of which way the car will turn. Some decision making logic will be needed to deal with multiple cars being in
+	the intersection when one or more cars needs to make a turn. The setHorizontalTrafficLight and setVerticalTrafficLight can
+	be merged into one function, setTrafficLight.
+	- 
 
 Don't forget; we are interested in both your solution and your thought process.
 

@@ -66,7 +66,7 @@ void main(void)
 		advanceLane(myIntersection.verticalTrafficColor, &myIntersection.southboundCars);
 
 		//Draw the intersection
-		system("clear");
+		system("cls");
 		drawIntersection(myIntersection);
 		fflush(stdout);
 		delay(1000);
@@ -119,14 +119,13 @@ static char * setHorizantalTrafficLight(struct intersection_s intersection)
 	{
 		currentColorEnum = RED;
 	}
-	else if(strcmp(currentColor,"G") == 0)
+	else if (strcmp(currentColor, "G") == 0)
 	{
 		currentColorEnum = GREEN;
-
-		if(strcmp(currentColor,"Y") == 0)
-		{
-			currentColorEnum = YELLOW;
-		}
+	}
+	else if(strcmp(currentColor,"Y") == 0)
+	{
+		currentColorEnum = YELLOW;
 	}
 
 	t++;
@@ -138,6 +137,7 @@ static char * setHorizantalTrafficLight(struct intersection_s intersection)
 				newColor = "G";
 				t = 0;
 			}
+			break;
 
 		case GREEN:
 			if((intersection.eastboundCars.carsWaitingAtIntersection + intersection.westboundCars.carsWaitingAtIntersection < intersection.northboundCars.carsWaitingAtIntersection + intersection.southboundCars.carsWaitingAtIntersection) || t > 10)
@@ -145,6 +145,7 @@ static char * setHorizantalTrafficLight(struct intersection_s intersection)
 				newColor = "Y";
 				t = 0;
 			}
+			break;
 
 		case YELLOW:
 			if(t > 1)
@@ -152,10 +153,12 @@ static char * setHorizantalTrafficLight(struct intersection_s intersection)
 				newColor = "R";
 				t = 0;
 			}
+			break;
 
 		default:
 			newColor = "R";
 			t = 0;	
+			break;
 	}
 
 	return newColor;
@@ -168,15 +171,15 @@ static char * setVerticalTrafficLight(struct intersection_s intersection)
 	char * newColor = currentColor;
 	traffic_light_colors_t currentColorEnum = -1;
 
-	if(strcmp(currentColor,"R") == 0)
+	if (strcmp(currentColor, "R") == 0)
 	{
 		currentColorEnum = RED;
-
-		if(strcmp(currentColor,"G") == 0)
-		{	
-			currentColorEnum = GREEN;
-		}
 	}
+	else if(strcmp(currentColor,"G") == 0)
+	{	
+		currentColorEnum = GREEN;
+	}
+	
 	else if(strcmp(currentColor,"Y") == 0)
 	{
 		currentColorEnum = YELLOW;
@@ -425,7 +428,7 @@ static void delay(int16_t ms)
 static int8_t checkForCrashes(void)
 {
 	int8_t isHorizantalCarInIntersection = (myIntersection.westboundCars.carsInIntersection | myIntersection.eastboundCars.carsInIntersection);
-	int8_t isVerticalCarInIntersection = (myIntersection.westboundCars.carsInIntersection | myIntersection.eastboundCars.carsInIntersection);
+	int8_t isVerticalCarInIntersection = (myIntersection.northboundCars.carsInIntersection | myIntersection.southboundCars.carsInIntersection);
 
 	if(isHorizantalCarInIntersection && isVerticalCarInIntersection){return 1;}
 	return 0;
